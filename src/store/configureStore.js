@@ -7,6 +7,7 @@ import * as actionCreators from '../actions';
 /**
  * 创建store
  * @param  {[type]} initialState [description]
+ * @param  {[type]} history [description]
  * @return {[type]}              [description]
  */
 export default function configureStore(initialState, history) {

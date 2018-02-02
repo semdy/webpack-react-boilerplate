@@ -5,9 +5,9 @@ import todos from './todo';
 import visibilityFilter from './visibilityFilter';
 
 const todoApp = combineReducers({
+  routerReducer,
   todos,
-  visibilityFilter,
-  router: routerReducer
+  visibilityFilter
 });
 
 export default todoApp;
