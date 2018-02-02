@@ -19,11 +19,13 @@ export default function configureStore(initialState, history) {
   );
 
   //热加载,及时更新reducer
-  if (module.hot) {
-    module.hot.accept('../reducers', () => {
-      const nextReducer = require('../reducers');
-      store.replaceReducer(nextReducer);
-    });
+  if (process.env.NODE_ENV === 'development') {
+    if (module.hot) {
+      module.hot.accept('../reducers', () => {
+        const nextReducer = require('../reducers');
+        store.replaceReducer(nextReducer);
+      });
+    }
   }
 
   return store;

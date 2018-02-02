@@ -11,6 +11,9 @@ import registerServiceWorker from './registerServiceWorker';
 
 import './styles/app.scss';
 
+const initialState = window.INITIAL_STATE || {};
+delete window.INITIAL_STATE;
+
 // requires and returns all modules that match
 const requireAll = requireContext => requireContext.keys().map(requireContext);
 // import all svg
@@ -18,7 +21,7 @@ const req = require.context('./images/icons', true, /\.svg$/);
 requireAll(req);
 
 const history = createHistory();
-let store = configureStore({}, history);
+let store = configureStore(initialState, history);
 
 ReactDOM.render(
   <Provider store={store}>
@@ -31,6 +34,8 @@ ReactDOM.render(
 
 registerServiceWorker();
 
-if (module.hot) {
-  module.hot.accept();
+if (process.env.NODE_ENV === 'development') {
+  if (module.hot) {
+    module.hot.accept();
+  }
 }
