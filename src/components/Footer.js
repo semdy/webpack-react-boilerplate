@@ -1,6 +1,3 @@
-/**
- * Created by larry on 2017/1/5.
- */
 import React from 'react';
 import FilterLink from '../containers/FilterLink'
 

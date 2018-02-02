@@ -10,6 +10,7 @@ const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const eslintFormatter = require('react-dev-utils/eslintFormatter');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
+const pxtorem = require('postcss-pxtorem');
 const paths = require('./paths');
 const getClientEnvironment = require('./env');
 
@@ -141,12 +142,46 @@ module.exports = {
           // "url" loader works just like "file" loader but it also embeds
           // assets smaller than specified size as data URLs to avoid requests.
           {
-            test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
+            test: /\.(bmp|png|jpe?g|gif|woff|woff2|ttf|otf)$/,
             loader: require.resolve('url-loader'),
             options: {
               limit: 10000,
               name: 'static/images/[name].[hash:8].[ext]',
             },
+          },
+          {
+            test: /\.svg$/,
+            include: paths.appImages,
+            exclude: paths.appIcons,
+            use: [
+              "babel-loader",
+              {
+                loader: "react-svg-loader",
+                options: {
+                  jsx: true, // true outputs JSX tags
+                  svgo: {
+                    plugins: [
+                      { removeTitle: false }
+                    ],
+                    floatPrecision: 2
+                  }
+                }
+              }
+            ]
+          },
+          {
+            test: /\.svg$/,
+            include: paths.appIcons,
+            use: [
+              {
+                loader: 'svg-sprite-loader'
+              }
+            ]
+          },
+          {
+            test: /\.json$/,
+            loader: 'json-loader',
+            include: paths.appSrc
           },
           // Process JS with Babel.
           {
@@ -154,7 +189,6 @@ module.exports = {
             include: paths.appSrc,
             loader: require.resolve('babel-loader'),
             options: {
-
               compact: true,
             },
           },
@@ -171,7 +205,7 @@ module.exports = {
           // use the "style" loader inside the async code so CSS from them won't be
           // in the main CSS file.
           {
-            test: /\.(css|scss)$/,
+            test: /\.(css|scss|less|styl)$/,
             loader: ExtractTextPlugin.extract(
               Object.assign(
                 {
@@ -207,14 +241,23 @@ module.exports = {
                             ],
                             flexbox: 'no-2009',
                           }),
+                          pxtorem({
+                            rootValue: 37.5,
+                            propList: ['*', '!font', '!font-size',],
+                            selectorBlackList: [/^html$/]
+                          })
                         ],
                       },
                     },
                     {
-                      loader: require.resolve('sass-loader'),
-                      options: {
-                      },
+                      loader: require.resolve('sass-loader')
                     },
+                    {
+                      loader: require.resolve('less-loader')
+                    },
+                    {
+                      loader: require.resolve('stylus-loader')
+                    }
                   ],
                 },
                 extractTextPluginOptions
@@ -232,7 +275,7 @@ module.exports = {
             // it's runtime that would otherwise processed through "file" loader.
             // Also exclude `html` and `json` extensions so they get processed
             // by webpacks internal loaders.
-            exclude: [/\.(js|jsx|mjs)$/, /\.html$/, /\.json$/, /\.scss$/],
+            exclude: [/\.(js|jsx|mjs)$/, /\.html$/, /\.json$/, /\.scss$/, /\.less$/, /\.styl$/],
             options: {
               name: 'static/images/[name].[hash:8].[ext]',
             },

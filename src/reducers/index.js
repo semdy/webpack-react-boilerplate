@@ -1,14 +1,13 @@
-/**
- * Created by larry on 2017/1/4.
- */
-import { combineReducers } from 'redux';
+import {combineReducers} from 'redux';
+import {routerReducer} from 'react-router-redux';
 
 import todos from './todo';
 import visibilityFilter from './visibilityFilter';
 
 const todoApp = combineReducers({
-    todos,
-    visibilityFilter
-})
+  todos,
+  visibilityFilter,
+  router: routerReducer
+});
 
-export default todoApp
+export default todoApp;

@@ -1,6 +1,3 @@
-/**
- * Created by larry on 2017/1/6.
- */
 import React from 'react';
 
 class Todo extends React.Component{

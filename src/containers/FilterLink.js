@@ -1,6 +1,3 @@
-/**
- * Created by larry on 2017/1/6.
- */
 import { connect } from 'react-redux';
 import Link from '../components/Link';
 import { setVisibility } from '../actions'
@@ -10,7 +7,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     active: ownProps.filter === state.visibilityFilter
   }
-}
+};
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
@@ -18,11 +15,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(setVisibility(ownProps.filter));
     }
   }
-}
+};
 
 const FilterLink = connect(
   mapStateToProps,
   mapDispatchToProps
-)(Link)
+)(Link);
 
 export default FilterLink

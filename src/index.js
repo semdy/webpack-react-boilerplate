@@ -1,19 +1,37 @@
+import './utils/flexible';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './components/App';
+import {ConnectedRouter} from 'react-router-redux'
 import {Provider} from 'react-redux';
-import {createStore} from 'redux';
-import todoApp from './reducers/index'
+import createHistory from 'history/createBrowserHistory';
+import configureStore from './store/configureStore';
+import App from './containers/App';
 import registerServiceWorker from './registerServiceWorker';
 
-let store = createStore(todoApp);
+import './styles/app.scss';
 
-// Render the main component into the dom
+// requires and returns all modules that match
+const requireAll = requireContext => requireContext.keys().map(requireContext);
+
+// import all svg
+const req = require.context('./images/icons', true, /\.svg$/);
+requireAll(req);
+
+const history = createHistory();
+let store = configureStore({}, history);
+
 ReactDOM.render(
   <Provider store={store}>
-    <App/>
+    <ConnectedRouter history={history}>
+      <App/>
+    </ConnectedRouter>
   </Provider>,
-  document.getElementById('app')
+  document.getElementById('root')
 );
 
 registerServiceWorker();
+
+if (module.hot) {
+  module.hot.accept();
+}

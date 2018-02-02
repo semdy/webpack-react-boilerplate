@@ -9,6 +9,7 @@ const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
 const eslintFormatter = require('react-dev-utils/eslintFormatter');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
+const pxtorem = require('postcss-pxtorem');
 const getClientEnvironment = require('./env');
 const paths = require('./paths');
 
@@ -131,12 +132,46 @@ module.exports = {
           // smaller than specified limit in bytes as data URLs to avoid requests.
           // A missing `test` is equivalent to a match.
           {
-            test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
+            test: /\.(bmp|png|jpe?g|gif|woff|woff2|ttf|otf)$/,
             loader: require.resolve('url-loader'),
             options: {
               limit: 10000,
               name: 'static/images/[name].[hash:8].[ext]',
             },
+          },
+          {
+            test: /\.svg$/,
+            include: paths.appImages,
+            exclude: paths.appIcons,
+            use: [
+              "babel-loader",
+              {
+                loader: "react-svg-loader",
+                options: {
+                  jsx: true, // true outputs JSX tags
+                  svgo: {
+                    plugins: [
+                      { removeTitle: false }
+                    ],
+                    floatPrecision: 2
+                  }
+                }
+              }
+            ]
+          },
+          {
+            test: /\.svg$/,
+            include: paths.appIcons,
+            use: [
+              {
+                loader: 'svg-sprite-loader'
+              }
+            ]
+          },
+          {
+            test: /\.json$/,
+            loader: 'json-loader',
+            include: paths.appSrc
           },
           // Process JS with Babel.
           {
@@ -157,7 +192,7 @@ module.exports = {
           // In production, we use a plugin to extract that CSS to a file, but
           // in development "style" loader enables hot editing of CSS.
           {
-            test: /\.(css|scss)$/,
+            test: /\.(css|scss|less|styl)$/,
             use: [
               require.resolve('style-loader'),
               {
@@ -166,14 +201,14 @@ module.exports = {
                   importLoaders: 1,
                 },
               },
-              /*{
+              {
                 loader: require.resolve('postcss-loader'),
                 options: {
                   // Necessary for external CSS imports to work
                   // https://github.com/facebookincubator/create-react-app/issues/2677
                   ident: 'postcss',
                   plugins: () => [
-                    require('postcss-flexbugs-fixes'),
+                    /*require('postcss-flexbugs-fixes'),
                     autoprefixer({
                       browsers: [
                         '>1%',
@@ -182,15 +217,24 @@ module.exports = {
                         'not ie < 9', // React doesn't support IE8 anyway
                       ],
                       flexbox: 'no-2009',
-                    }),
+                    }),*/
+                    pxtorem({
+                      rootValue: 37.5,
+                      propList: ['*', '!font', '!font-size',],
+                      selectorBlackList: [/^html$/]
+                    })
                   ],
                 },
-              },*/
-              {
-                loader: require.resolve('sass-loader'),
-                options: {
-                },
               },
+              {
+                loader: require.resolve('sass-loader')
+              },
+              {
+                loader: require.resolve('less-loader')
+              },
+              {
+                loader: require.resolve('stylus-loader')
+              }
             ],
           },
           // "file" loader makes sure those assets get served by WebpackDevServer.
@@ -203,7 +247,7 @@ module.exports = {
             // its runtime that would otherwise processed through "file" loader.
             // Also exclude `html` and `json` extensions so they get processed
             // by webpacks internal loaders.
-            exclude: [/\.(js|jsx|mjs)$/, /\.html$/, /\.json$/, /\.scss$/],
+            exclude: [/\.(js|jsx|mjs)$/, /\.html$/, /\.json$/, /\.scss$/, /\.less$/, /\.styl$/],
             loader: require.resolve('file-loader'),
             options: {
               name: 'static/images/[name].[hash:8].[ext]',

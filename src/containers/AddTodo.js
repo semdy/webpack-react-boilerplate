@@ -1,9 +1,3 @@
-/**
- * Created by larry on 2017/1/4.
- */
-
-import '../styles/addToDo.css'
-
 import React from 'react';
 import {connect} from 'react-redux';
 import {addTodo} from '../actions';
@@ -30,8 +24,8 @@ let AddTodo = ({dispatch}) => {
       </form>
     </div>
   )
-}
+};
 
-AddTodo = connect()(AddTodo)
+AddTodo = connect()(AddTodo);
 
 export default AddTodo
