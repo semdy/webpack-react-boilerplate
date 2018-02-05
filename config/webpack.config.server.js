@@ -25,7 +25,6 @@ const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
 const publicUrl = publicPath.slice(0, -1);
 // Get environment variables to inject into our app.
 const env = getClientEnvironment(publicUrl);
-
 // Assert this just to be safe.
 // Development builds of React are slow and not intended for production.
 if (env.stringified['process.env'].NODE_ENV !== '"production"') {
@@ -49,6 +48,7 @@ const extractTextPluginOptions = shouldUseRelativeAssetPaths
 // It compiles slowly and is focused on producing a fast and minimal bundle.
 // The development configuration is different and lives in a separate file.
 module.exports = {
+  target: 'node',
   // Don't attempt to continue if there are any errors.
   bail: true,
   // We generate sourcemaps in production. This is slow but gives good results.
@@ -56,10 +56,7 @@ module.exports = {
   devtool: shouldUseSourceMap ? 'source-map' : false,
   // In production, we only want to load the polyfills and the app code.
   entry: {
-    renderer: [
-      require.resolve('./polyfills'),
-      rendererFile
-    ]
+    renderer: rendererFile
   },
   output: {
     // The build folder.
@@ -68,6 +65,7 @@ module.exports = {
     // There will be one main bundle, and one file per asynchronous chunk.
     // We don't currently advertise code splitting but Webpack supports it.
     filename: 'static/scripts/[name].js',
+    libraryTarget: 'commonjs2',
     chunkFilename: 'static/scripts/[name].js',
     // We inferred the "public path" (such as / or /my-project) from homepage.
     publicPath: publicPath,
@@ -341,9 +339,9 @@ module.exports = {
   // Tell Webpack to provide empty mocks for them so importing them works.
   node: {
     dgram: 'empty',
-    fs: 'empty',
     net: 'empty',
     tls: 'empty',
     child_process: 'empty',
+    __dirname: true
   },
 };

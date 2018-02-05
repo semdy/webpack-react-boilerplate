@@ -9,6 +9,7 @@
     "build:server": "node scripts/server.js",
     "lint": "eslint ./src",
     "serve:build": "pushstate-server build",
+    "serve:server": "node server/index.js",
     "release:patch": "npm version patch && npm publish && git push --follow-tags",
     "test": "node scripts/test.js --env=jsdom"
   },

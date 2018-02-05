@@ -37,7 +37,6 @@ if (env.stringified['process.env'].NODE_ENV !== '"production"') {
 
 // Note: defined here because it will be used more than once.
 const cssFilename = 'static/styles/[name].[contenthash:8].css';
-const rendererFile = path.resolve(paths.appServer, 'middleware/renderer.js');
 
 // ExtractTextPlugin expects the build output to be flat.
 // (See https://github.com/webpack-contrib/extract-text-webpack-plugin/issues/27)
@@ -62,8 +61,7 @@ module.exports = {
     app: [
       require.resolve('./polyfills'),
       paths.appIndexJs
-    ],
-    renderer: rendererFile
+    ]
   },
   output: {
     // The build folder.
@@ -134,10 +132,7 @@ module.exports = {
             loader: require.resolve('eslint-loader'),
           },
         ],
-        include: [
-          paths.appSrc,
-          paths.appServer,
-        ],
+        include: paths.appSrc,
       },
       {
         // "oneOf" will traverse all following loaders until one will
@@ -191,10 +186,7 @@ module.exports = {
           // Process JS with Babel.
           {
             test: /\.(js|jsx|mjs)$/,
-            include: [
-              paths.appSrc,
-              paths.appServer,
-            ],
+            include: paths.appSrc,
             loader: require.resolve('babel-loader'),
             options: {
               compact: true,
