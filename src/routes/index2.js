@@ -2,9 +2,7 @@ import React from 'react';
 import {Route, Switch, Redirect} from 'react-router-dom';
 import {connect} from 'react-redux'
 
-import Todo from "../containers/TodoList";
-import Test from "../containers/Test";
-import NotFound from "../containers/NotFound";
+import {Todo, Test, NotFound} from '../syncLoader';
 
 const ConnectedSwitch = connect(state => ({
   location: state.location

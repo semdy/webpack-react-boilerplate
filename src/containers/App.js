@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {NavLink, withRouter} from 'react-router-dom';
-import Routes from '../routes/index2';
+import Routes from '../routes';
 
 class App extends Component {
   constructor(props) {

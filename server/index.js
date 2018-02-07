@@ -1,23 +1,31 @@
 const path = require('path');
 const express = require('express');
-const serverRendererPath = path.join(__dirname, '../build/static/scripts/renderer.js');
-const serverRenderer = require(serverRendererPath).default;
+const bodyParser = require('body-parser');
+const morgan = require('morgan');
+
+let serverRendererPath;
+let serverRenderer;
+
+if (process.env.NODE_ENV === 'production') {
+  serverRendererPath = path.join(__dirname, '../build/static/scripts/renderer.js');
+  serverRenderer = require(serverRendererPath).default;
+} else {
+  serverRendererPath = path.join(__dirname, 'renderer.js');
+  serverRenderer = require(serverRendererPath);
+}
 
 const PORT = 8000;
 const app = express();
-const router = express.Router();
 
-// root (/) should always serve our server rendered page
-router.use("*", serverRenderer);
+app.use(morgan('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // other static resources should just be served as they are
-router.use(express.static(
-  path.resolve(__dirname, '..', 'build'),
-  { maxAge: '30d' }
-));
+app.use(express.static(path.resolve(__dirname, '..', 'build')));
 
-// tell the app to use the above rules
-app.use(router);
+// root (*) should always serve our server rendered page
+app.use("*", serverRenderer);
 
 // start the app
 app.listen(PORT, (error) => {

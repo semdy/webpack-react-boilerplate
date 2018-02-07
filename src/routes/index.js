@@ -1,15 +1,12 @@
 import React from 'react';
 import {Route, Switch, Redirect} from 'react-router-dom';
 import {connect} from 'react-redux'
-import asyncComponent from "../components/AsyncComponent";
+
+import {Todo, Test, NotFound} from '../loader/syncLoader';
 
 const ConnectedSwitch = connect(state => ({
   location: state.location
 }))(Switch);
-
-const Todo = asyncComponent(() => import("../containers/TodoList"));
-const Test = asyncComponent(() => import("../containers/Test"));
-const NotFound = asyncComponent(() => import("../containers/NotFound"));
 
 const routeConfig = ({props}) => (
   <ConnectedSwitch>

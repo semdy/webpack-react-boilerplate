@@ -1,22 +1,24 @@
-import { createStore, applyMiddleware } from 'redux';
+import {createStore, applyMiddleware} from 'redux';
 import thunk from 'redux-thunk';
 import {routerMiddleware} from 'react-router-redux';
+import {composeWithDevTools} from 'redux-devtools-extension';
+import createBrowserHistory from 'history/createBrowserHistory';
+import createMemoryHistory from 'history/createMemoryHistory';
 import reducer from '../reducers';
-import * as actionCreators from '../actions';
 
-/**
- * 创建store
- * @param  {[type]} initialState [description]
- * @param  {[type]} history [description]
- * @return {[type]}              [description]
- */
-export default function configureStore(initialState, history) {
-  const store = createStore(reducer, initialState,
-    //redux调试代码
-    window.devToolsExtension && window.devToolsExtension({ actionCreators }),
-    applyMiddleware(thunk),
-    applyMiddleware(routerMiddleware(history))
-  );
+
+export default (initialState = {}, fromServer = false) => {
+
+  let history;
+
+  if (fromServer) {
+    history = createMemoryHistory();
+  } else {
+    history = createBrowserHistory();
+  }
+
+  const middleware = composeWithDevTools(applyMiddleware(routerMiddleware(history), thunk));
+  const store = createStore(reducer, initialState, middleware);
 
   //热加载,及时更新reducer
   if (process.env.NODE_ENV === 'development') {
@@ -28,5 +30,5 @@ export default function configureStore(initialState, history) {
     }
   }
 
-  return store;
+  return {history, store};
 }
