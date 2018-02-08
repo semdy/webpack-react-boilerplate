@@ -8,9 +8,11 @@ import configureStore from '../src/store/configureStore';
 
 const path = require("path");
 const fs = require("fs");
+const isDev = process.env.NODE_ENV === 'development';
+const targetFolder = isDev ? 'public' : 'build';
 
 export default (req, res, next) => {
-  const filePath = path.resolve(__dirname, '..', 'build', 'index.html');
+  const filePath = path.resolve(__dirname, '..', targetFolder, 'index.html');
   fs.readFile(filePath, 'utf8', (err, htmlData) => {
     if (err) {
       console.error('err', err);
@@ -32,12 +34,16 @@ export default (req, res, next) => {
       </Provider>
     );
 
-    return res.status(200).send(
-      htmlData.replace(
-        '<div id="root"></div>',
-        `<div id="root">${markup}</div>`
-      ).replace('window.INITIAL_STATE={}', `window.INITIAL_STATE = ${preloadedState}`)
-    )
+    htmlData = htmlData.replace(
+      '<div id="root"></div>',
+      `<div id="root">${markup}</div>`
+    ).replace('window.INITIAL_STATE={}', `window.INITIAL_STATE = ${preloadedState}`);
+
+    if (isDev) {
+      htmlData = htmlData.replace('</body>', '<script type="text/javascript" src="/static/scripts/bundle.js"></script>\n</body>');
+    }
+
+    return res.status(200).send(htmlData);
 
   });
 }
