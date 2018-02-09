@@ -40,7 +40,9 @@ export default (req, res, next) => {
     ).replace('window.INITIAL_STATE={}', `window.INITIAL_STATE = ${preloadedState}`);
 
     if (isDev) {
-      htmlData = htmlData.replace(/%PUBLIC_URL%/g, '').replace('</body>', '<script type="text/javascript" src="/bundle.js"></script>\n</body>');
+      htmlData = htmlData
+        .replace(/%PUBLIC_URL%/g, process.env.PUBLIC_URL)
+        .replace('</body>', '<script type="text/javascript" src="/bundle.js"></script>\n</body>');
     }
 
     return res.status(200).send(htmlData);
