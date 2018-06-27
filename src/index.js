@@ -2,7 +2,7 @@ import './utils/flexible';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {ConnectedRouter} from 'react-router-redux'
+import {ConnectedRouter} from 'react-router-redux';
 import {Provider} from 'react-redux';
 import configureStore from './store/configureStore';
 import App from './containers/App';

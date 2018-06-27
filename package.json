@@ -120,6 +120,7 @@
     "webpack-node-externals": "^1.6.0"
   },
   "dependencies": {
+    "classnames": "^2.2.6",
     "history": "^4.7.2",
     "object-assign": "4.1.1",
     "promise": "8.0.1",

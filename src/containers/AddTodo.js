@@ -2,11 +2,13 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {addTodo} from '../actions';
 
+import styles from './addTodo.less';
+
 let AddTodo = ({dispatch}) => {
   let input;
 
   return (
-    <div>
+    <div className={styles.todoWrapper}>
       <form onSubmit={e => {
         e.preventDefault();
         if (!input.value.trim()) {
