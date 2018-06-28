@@ -1,10 +1,17 @@
 import React, {Component} from 'react';
+import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {addTodo} from '../actions';
 
 import styles from './addTodo.less';
 
-@connect()
+@connect(
+  state => ({counter:state.counter}),
+  dispatch => ({
+    //addTodo: (...args) => dispatch(addTodo(...args)),
+    ...bindActionCreators({addTodo}, dispatch)
+  })
+)
 export default class AddTodo extends Component {
 
   render () {
@@ -16,7 +23,7 @@ export default class AddTodo extends Component {
           if (!input.value.trim()) {
             return
           }
-          this.props.dispatch(addTodo(input.value));
+          this.props.addTodo(input.value);
           input.value = ''
         }}>
           <input ref={node => {
