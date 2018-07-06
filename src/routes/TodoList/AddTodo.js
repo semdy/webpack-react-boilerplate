@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {addTodo} from '../actions';
+import {addTodo} from '../../actions';
 
 import styles from './addTodo.less';
 

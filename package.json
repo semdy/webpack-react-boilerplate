@@ -1,15 +1,15 @@
 {
-  "name": "my-react-app",
+  "name": "webpack-react-boilerplate",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "clean": "rimraf build",
+    "clean": "rimraf dist",
     "start": "cross-env PORT=3000 node scripts/start.js",
     "build": "node scripts/build.js",
-    "dev:server": "cross-env NODE_ENV=development nodemon --exec babel-node ./server/index.js",
+    "dev:server": "cross-env NODE_ENV=development nodemon --exec babel-node ./serverRender/index.js",
     "build:server": "node scripts/server.js",
-    "serve:build": "pushstate-server build",
-    "serve:server": "cross-env NODE_ENV=production PORT=8000 pm2 start ./server/index.js",
+    "serve:dist": "pushstate-server dist",
+    "serve:server": "cross-env NODE_ENV=production PORT=8000 pm2 start ./serverRender/index.js",
     "serve:kill": "pm2 kill",
     "release:patch": "npm version patch && npm publish && git push --follow-tags",
     "lint": "eslint ./src",
@@ -110,7 +110,7 @@
     "style-loader": "0.19.0",
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.1",
-    "svg-sprite-loader": "^3.6.2",
+    "svg-sprite-loader": "^3.8.0",
     "sw-precache-webpack-plugin": "0.11.4",
     "url-loader": "0.6.2",
     "webpack": "3.8.1",
@@ -134,6 +134,7 @@
     "react-router-redux": "^5.0.0-alpha.9",
     "redux": "^3.7.2",
     "redux-thunk": "^2.2.0",
-    "whatwg-fetch": "2.0.3"
+    "whatwg-fetch": "2.0.3",
+    "rc-animate": "^2.4.4"
   }
 }

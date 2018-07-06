@@ -15,6 +15,6 @@ const Link = ({active, children, onClick}) => {
       {children}
     </a>
   )
-}
+};
 
 export default Link

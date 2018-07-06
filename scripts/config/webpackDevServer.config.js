@@ -9,10 +9,10 @@ const paths = require('./paths');
 const protocol = process.env.HTTPS === 'true' ? 'https' : 'http';
 const host = process.env.HOST || '0.0.0.0';
 
-module.exports = function(proxy, allowedHost) {
+module.exports = function (proxy, allowedHost) {
   return {
     disableHostCheck:
-      !proxy || process.env.DANGEROUSLY_DISABLE_HOST_CHECK === 'true',
+    !proxy || process.env.DANGEROUSLY_DISABLE_HOST_CHECK === 'true',
     // Enable gzip compression of generated files.
     compress: true,
     clientLogLevel: 'none',
@@ -30,7 +30,6 @@ module.exports = function(proxy, allowedHost) {
     overlay: false,
     historyApiFallback: {
       // Paths with dots should still use the history fallback.
-      // See https://github.com/facebookincubator/create-react-app/issues/387.
       disableDotRule: true,
     },
     public: allowedHost,

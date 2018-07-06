@@ -7,10 +7,10 @@
 /coverage
 
 # production
-/build
+/dist
 
 .idea/
-.VS_CODE/
+.vscode/
 
 # misc
 .DS_Store/

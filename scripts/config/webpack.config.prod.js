@@ -3,9 +3,11 @@
 const autoprefixer = require('autoprefixer');
 const path = require('path');
 const webpack = require('webpack');
-const nodeExternals = require('webpack-node-externals');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const ManifestPlugin = require('webpack-manifest-plugin');
 const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
+const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const eslintFormatter = require('react-dev-utils/eslintFormatter');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const pxtorem = require('postcss-pxtorem');
@@ -14,35 +16,86 @@ const getClientEnvironment = require('./env');
 
 const publicPath = paths.servedPath;
 const shouldUseRelativeAssetPaths = publicPath === './';
-// Source maps are resource heavy and can cause out of memory issue for large source files.
 const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
 const publicUrl = publicPath.slice(0, -1);
 const env = getClientEnvironment(publicUrl);
 
-if (env.stringified['process.env'].NODE_ENV !== '"server"') {
-  throw new Error('Production builds must have NODE_ENV=server.');
+if (env.stringified['process.env'].NODE_ENV !== '"production"') {
+  throw new Error('Production builds must have NODE_ENV=production.');
 }
 
 const cssFilename = 'static/styles/[name].[contenthash:8].css';
-const rendererFile = path.resolve(paths.appServer, 'renderer.js');
+
 const extractTextPluginOptions = shouldUseRelativeAssetPaths
-  ? { publicPath: Array(cssFilename.split('/').length).join('../') }
+  ?
+  {publicPath: Array(cssFilename.split('/').length).join('../')}
   : {};
 
+const extractCSSFromLoader = (loaderName) => {
+  const baseOptions = {
+    fallback: 'style-loader',
+    use: [
+      {
+        loader: require.resolve('css-loader'),
+        options: {
+          importLoaders: 1,
+          minimize: true,
+          modules: true,
+          localIdentName: '[local]__[hash:base64:5]',
+          sourceMap: shouldUseSourceMap
+        }
+      },
+      {
+        loader: require.resolve('postcss-loader'),
+        options: {
+          ident: 'postcss',
+          plugins: () => [
+            require('postcss-flexbugs-fixes'),
+            autoprefixer({
+              browsers: [
+                '>1%',
+                'last 4 versions',
+                'Firefox ESR',
+                'not ie < 9'
+              ],
+              flexbox: 'no-2009'
+            }),
+            pxtorem({
+              rootValue: 37.5,
+              propList: ['*', '!font', '!font-size',],
+              selectorBlackList: [/^html$/]
+            })
+          ]
+        }
+      }
+    ]
+  };
+
+  if (loaderName) {
+    baseOptions.use.push(loaderName);
+  }
+
+  return ExtractTextPlugin.extract(
+    Object.assign(
+      baseOptions,
+      extractTextPluginOptions
+    )
+  )
+};
 
 module.exports = {
-  target: 'node',
-  externals: nodeExternals(),
-  // Don't attempt to continue if there are any errors.
   bail: true,
   devtool: shouldUseSourceMap ? 'source-map' : false,
   entry: {
-    renderer: rendererFile
+    app: [
+      require.resolve('./polyfills'),
+      paths.appIndexJs
+    ]
   },
   output: {
     path: paths.appBuild,
-    filename: 'static/scripts/[name].js',
-    libraryTarget: 'commonjs2',
+    filename: 'static/scripts/[name].[chunkhash:8].js',
+    chunkFilename: 'static/scripts/[name].[chunkhash:8].chunk.js',
     publicPath: publicPath,
     devtoolModuleFilenameTemplate: info =>
       path
@@ -51,7 +104,6 @@ module.exports = {
   },
   resolve: {
     modules: ['node_modules', paths.appNodeModules].concat(
-      // It is guaranteed to exist because we tweak it in `env.js`
       process.env.NODE_PATH.split(path.delimiter).filter(Boolean)
     ),
     extensions: ['.web.js', '.mjs', '.js', '.json', '.web.jsx', '.jsx'],
@@ -60,7 +112,7 @@ module.exports = {
     },
     plugins: [
       new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson]),
-    ],
+    ]
   },
   module: {
     strictExportPresence: true,
@@ -78,7 +130,7 @@ module.exports = {
             loader: require.resolve('eslint-loader'),
           },
         ],
-        include: paths.appServer,
+        include: paths.appSrc
       },
       {
         oneOf: [
@@ -102,7 +154,7 @@ module.exports = {
                   jsx: true, // true outputs JSX tags
                   svgo: {
                     plugins: [
-                      { removeTitle: false }
+                      {removeTitle: false}
                     ],
                     floatPrecision: 2
                   }
@@ -126,92 +178,72 @@ module.exports = {
           },
           {
             test: /\.(js|jsx|mjs)$/,
-            include: [
-              paths.appSrc,
-              paths.appServer,
-            ],
+            include: paths.appSrc,
             loader: require.resolve('babel-loader'),
             options: {
-              compact: true,
-            },
+              compact: true
+            }
           },
           {
-            test: /\.(css|scss|less|styl)$/,
-            loader: ExtractTextPlugin.extract(
-              Object.assign(
-                {
-                  fallback: {
-                    loader: require.resolve('style-loader'),
-                    options: {
-                      hmr: false,
-                    },
-                  },
-                  use: [
-                    {
-                      loader: require.resolve('css-loader'),
-                      options: {
-                        importLoaders: 1,
-                        minimize: true,
-                        modules: true,
-                        sourceMap: shouldUseSourceMap,
-                      },
-                    },
-                    {
-                      loader: require.resolve('postcss-loader'),
-                      options: {
-                        ident: 'postcss',
-                        plugins: () => [
-                          require('postcss-flexbugs-fixes'),
-                          autoprefixer({
-                            browsers: [
-                              '>1%',
-                              'last 4 versions',
-                              'Firefox ESR',
-                              'not ie < 9', // React doesn't support IE8 anyway
-                            ],
-                            flexbox: 'no-2009',
-                          }),
-                          pxtorem({
-                            rootValue: 37.5,
-                            propList: ['*', '!font', '!font-size',],
-                            selectorBlackList: [/^html$/]
-                          })
-                        ],
-                      },
-                    },
-                    {
-                      loader: require.resolve('sass-loader')
-                    },
-                    {
-                      loader: require.resolve('less-loader')
-                    },
-                    {
-                      loader: require.resolve('stylus-loader')
-                    }
-                  ],
-                },
-                extractTextPluginOptions
-              )
-            )
+            test: /\.css$/,
+            loader: extractCSSFromLoader()
+          },
+          {
+            test: /\.scss$/,
+            loader: extractCSSFromLoader('sass-loader')
+          },
+          {
+            test: /\.less$/,
+            loader: extractCSSFromLoader('less-loader')
+          },
+          {
+            test: /\.styl$/,
+            loader: extractCSSFromLoader('stylus-loader')
           },
           {
             loader: require.resolve('file-loader'),
             exclude: [/\.(js|jsx|mjs)$/, /\.html$/, /\.json$/, /\.scss$/, /\.less$/, /\.styl$/],
             options: {
-              name: 'static/images/[name].[hash:8].[ext]',
-            },
+              name: 'static/images/[name].[hash:8].[ext]'
+            }
           }
-        ],
-      },
-    ],
+        ]
+      }
+    ]
   },
   plugins: [
     new InterpolateHtmlPlugin(env.raw),
+    new HtmlWebpackPlugin({
+      inject: true,
+      template: paths.appHtml,
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeRedundantAttributes: true,
+        useShortDoctype: true,
+        removeEmptyAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+        keepClosingSlash: true,
+        minifyJS: true,
+        minifyCSS: true,
+        minifyURLs: true,
+      },
+    }),
+    new webpack.HashedModuleIdsPlugin(),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor',
+      minChunks: function (module) {
+        if (module.resource && (/^.*\.(css|scss)$/).test(module.resource)) {
+          return false;
+        }
+        return module.context && module.context.includes("node_modules");
+      }
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'manifest',
+      minChunks: Infinity
+    }),
     new webpack.DefinePlugin(env.stringified),
-    new webpack.NormalModuleReplacementPlugin(
-      /asyncLoader.js/,
-      'syncLoader.js'
-    ),
     new webpack.optimize.UglifyJsPlugin({
       compress: {
         warnings: false,
@@ -229,13 +261,33 @@ module.exports = {
     new ExtractTextPlugin({
       filename: cssFilename,
     }),
+    new ManifestPlugin({
+      fileName: 'asset-manifest.json',
+    }),
+    new SWPrecacheWebpackPlugin({
+      dontCacheBustUrlsMatching: /\.\w{8}\./,
+      filename: 'service-worker.js',
+      logger(message) {
+        if (message.indexOf('Total precache size is') === 0) {
+          return;
+        }
+        if (message.indexOf('Skipping static resource') === 0) {
+          return;
+        }
+        console.log(message);
+      },
+      minify: true,
+      navigateFallback: publicUrl + '/index.html',
+      navigateFallbackWhitelist: [/^(?!\/__).*/],
+      staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
+    }),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
   ],
   node: {
     dgram: 'empty',
+    fs: 'empty',
     net: 'empty',
     tls: 'empty',
-    child_process: 'empty',
-    __dirname: true
-  },
+    child_process: 'empty'
+  }
 };

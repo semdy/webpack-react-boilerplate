@@ -3,15 +3,17 @@ body {
   background: #fff;
 }
 
-.nav {
-  li {
-    display: inline-block;
-    list-style: none;
-    margin-right: 10px;
+:global {
+  .nav {
+    li {
+      display: inline-block;
+      list-style: none;
+      margin-right: 10px;
 
-    > a {
-      &.selected {
-        color: #ff0000;
+      > a {
+        &.selected {
+          color: #ff0000;
+        }
       }
     }
   }

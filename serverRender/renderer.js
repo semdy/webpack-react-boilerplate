@@ -3,13 +3,13 @@ import ReactDOMServer from 'react-dom/server';
 import {ConnectedRouter, push} from 'react-router-redux';
 import {Provider} from 'react-redux';
 import serialize from 'serialize-javascript';
-import App from '../src/containers/App';
+import App from '../src/App';
 import configureStore from '../src/store/configureStore';
 
 const path = require("path");
 const fs = require("fs");
 const isDev = process.env.NODE_ENV === 'development';
-const targetFolder = isDev ? 'public' : 'build';
+const targetFolder = isDev ? 'public' : 'dist';
 
 export default (req, res, next) => {
   const filePath = path.resolve(__dirname, '..', targetFolder, 'index.html');
@@ -18,7 +18,6 @@ export default (req, res, next) => {
       console.error('err', err);
       return res.status(404).end();
     }
-
 
     const {store, history} = configureStore({}, true);
 

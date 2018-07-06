@@ -6,7 +6,7 @@ const logger = require('morgan');
 let serverRenderer;
 
 if (process.env.NODE_ENV === 'production') {
-  let serverRendererPath = path.join(__dirname, '../build/static/scripts/renderer.js');
+  let serverRendererPath = path.join(__dirname, '../dist/static/scripts/renderer.js');
   serverRenderer = require(serverRendererPath).default;
 } else {
   serverRenderer = require('./renderer.js').default;
@@ -24,7 +24,7 @@ if (process.env.NODE_ENV === 'development') {
   const webpack = require('webpack');
   const webpackMiddleware = require('webpack-dev-middleware');
   const hotMiddleware = require('webpack-hot-middleware');
-  const config = require('../config/webpack.config.dev.js');
+  const config = require('../scripts/config/webpack.config.dev.js');
   const compiler = webpack(config);
 
   app.use(hotMiddleware(compiler, {
@@ -60,7 +60,7 @@ if (process.env.NODE_ENV === 'development') {
   });
 }
 else {
-  app.use(express.static(path.resolve(__dirname, '..', 'build')));
+  app.use(express.static(path.resolve(__dirname, '..', 'dist')));
 }
 
 app.use('*', serverRenderer);

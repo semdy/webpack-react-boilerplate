@@ -6,7 +6,7 @@ const logger = require('morgan');
 let serverRenderer;
 
 if (process.env.NODE_ENV === 'production') {
-  let serverRendererPath = path.join(__dirname, '../build/static/scripts/renderer.js');
+  let serverRendererPath = path.join(__dirname, '../dist/static/scripts/renderer.js');
   serverRenderer = require(serverRendererPath).default;
 } else {
   serverRenderer = require('./renderer.js').default;
@@ -18,7 +18,7 @@ const app = express();
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(path.resolve(__dirname, '..', 'build')));
+app.use(express.static(path.resolve(__dirname, '..', 'dist')));
 app.use("*", serverRenderer);
 
 app.listen(PORT, (error) => {

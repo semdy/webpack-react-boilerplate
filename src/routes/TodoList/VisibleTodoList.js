@@ -1,6 +1,7 @@
+import React from 'react';
 import {connect} from 'react-redux';
-import {toggleTodo} from '../actions';
-import TodoList from '../components/TodoList';
+import {toggleTodo} from '../../actions';
+import Todo from './Todo';
 
 const getVisibleTodos = (todos, filter) => {
   switch (filter) {
@@ -13,6 +14,23 @@ const getVisibleTodos = (todos, filter) => {
     default:
       return todos;
   }
+};
+
+//圆括号里面要写大括号
+const TodoList = ({todos, onTodoClick}) => {
+  return (
+    <ul>
+      {
+        todos.map(todo =>
+          <Todo
+            key={todo.id}
+            {...todo}
+            onClick={() => onTodoClick(todo.id)}
+          />
+        )
+      }
+    </ul>
+  )
 };
 
 const mapStateToProps = (state) => {

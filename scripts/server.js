@@ -12,14 +12,14 @@ process.on('unhandledRejection', err => {
 });
 
 // Ensure environment variables are read.
-require('../config/env');
+require('./config/env');
 
 const path = require('path');
 const chalk = require('chalk');
 const fs = require('fs-extra');
 const webpack = require('webpack');
-const config = require('../config/webpack.config.server');
-const paths = require('../config/paths');
+const config = require('./config/webpack.config.server');
+const paths = require('./config/paths');
 const checkRequiredFiles = require('react-dev-utils/checkRequiredFiles');
 const formatWebpackMessages = require('react-dev-utils/formatWebpackMessages');
 const printHostingInstructions = require('react-dev-utils/printHostingInstructions');
@@ -134,12 +134,5 @@ function build(previousFileSizes) {
         warnings: messages.warnings,
       });
     });
-  });
-}
-
-function copyPublicFolder() {
-  fs.copySync(paths.appPublic, paths.appBuild, {
-    dereference: true,
-    filter: file => file !== paths.appHtml,
   });
 }

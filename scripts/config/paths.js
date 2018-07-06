@@ -5,7 +5,6 @@ const fs = require('fs');
 const url = require('url');
 
 // Make sure any symlinks in the project folder are resolved:
-// https://github.com/facebookincubator/create-react-app/issues/637
 const appDirectory = fs.realpathSync(process.cwd());
 const resolveApp = relativePath => path.resolve(appDirectory, relativePath);
 
@@ -25,12 +24,6 @@ function ensureSlash(path, needsSlash) {
 const getPublicUrl = appPackageJson =>
   envPublicUrl || require(appPackageJson).homepage;
 
-// We use `PUBLIC_URL` environment variable or "homepage" field to infer
-// "public path" at which the app is served.
-// Webpack needs to know it to put the right <script> hrefs into HTML even in
-// single-page apps that may serve index.html for nested URLs like /todos/42.
-// We can't use a relative path in HTML because we don't want to load something
-// like /todos/42/static/js/bundle.7289d.js. We have to know the root.
 function getServedPath(appPackageJson) {
   const publicUrl = getPublicUrl(appPackageJson);
   const servedUrl =
@@ -41,15 +34,15 @@ function getServedPath(appPackageJson) {
 // config after eject: we're in ./config/
 module.exports = {
   dotenv: resolveApp('.env'),
-  appBuild: resolveApp('build'),
+  appBuild: resolveApp('dist'),
   appPublic: resolveApp('public'),
   appHtml: resolveApp('public/index.html'),
   appIndexJs: resolveApp('src/index.js'),
   appPackageJson: resolveApp('package.json'),
   appSrc: resolveApp('src'),
   appServer: resolveApp('server'),
-  appImages: resolveApp('src/images'),
-  appIcons: resolveApp('src/images/icons'),
+  appImages: resolveApp('src/assets/img'),
+  appIcons: resolveApp('src/assets/icons'),
   yarnLockFile: resolveApp('yarn.lock'),
   testsSetup: resolveApp('src/setupTests.js'),
   appNodeModules: resolveApp('node_modules'),
