@@ -1,14 +1,13 @@
-;(function (win, lib) {
+;(function (win, flexible) {
   let
     doc = win.document,
     docEl = doc.documentElement,
     dpr = 0,
     scale = 0,
     tid,
-    flexible = lib.flexible || (lib.flexible = {}),
     isIPhone = win.navigator.appVersion.match(/iphone/gi),
     devicePixelRatio = win.devicePixelRatio;
-  
+
   if (isIPhone) {
     // iOS下，对于2和3的屏，用2倍的方案，其余的用1倍方案
     if (devicePixelRatio >= 3 && (!dpr || dpr >= 3)) {
@@ -62,4 +61,4 @@
     return val;
   }
 
-})(window, window['lib'] || (window['lib'] = {}));
+})(window, window.flexible || (window.flexible = {}));
