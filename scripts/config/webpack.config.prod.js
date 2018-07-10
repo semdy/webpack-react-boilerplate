@@ -95,7 +95,7 @@ module.exports = {
   output: {
     path: paths.appBuild,
     filename: 'static/scripts/[name].[chunkhash:8].js',
-    chunkFilename: 'static/scripts/[name].[chunkhash:8].chunk.js',
+    chunkFilename: 'static/scripts/[name].[chunkhash:8].js',
     publicPath: publicPath,
     devtoolModuleFilenameTemplate: info =>
       path
@@ -238,6 +238,12 @@ module.exports = {
         }
         return module.context && module.context.includes("node_modules");
       }
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      async: 'common-chunk',
+      minChunks: (module, count) => (
+        count >= 2
+      )
     }),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'manifest',
