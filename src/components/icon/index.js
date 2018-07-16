@@ -1,3 +1,6 @@
+import React from 'react'
+import './icon.less'
+
 export default (
   {
     name,
@@ -12,4 +15,4 @@ export default (
       <use xlinkHref={`#${name}`}/>
     </svg>
   </span>
-);
+)
