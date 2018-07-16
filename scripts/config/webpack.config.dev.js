@@ -185,7 +185,7 @@ module.exports = {
             use: [...baseCSSloader]
           },
           {
-            test: /\.scss$/,
+            test: /\.(sass|scss)$/,
             use: [
               ...baseCSSloader,
               {
@@ -203,7 +203,7 @@ module.exports = {
             ]
           },
           {
-            test: /\.styl$/,
+            test: /\.(stylus|styl)$/,
             use: [
               ...baseCSSloader,
               {

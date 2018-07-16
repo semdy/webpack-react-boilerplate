@@ -214,7 +214,7 @@ module.exports = {
             loader: extractCSSFromLoader('less-loader')
           },
           {
-            test: /\.styl$/,
+            test: /\.(stylus|styl)$/,
             loader: extractCSSFromLoader('stylus-loader')
           },
           {
