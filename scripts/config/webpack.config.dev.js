@@ -105,12 +105,28 @@ module.exports = {
           // smaller than specified limit in bytes as data URLs to avoid requests.
           // A missing `test` is equivalent to a match.
           {
-            test: /\.(bmp|png|jpe?g|gif|woff|woff2|ttf|otf)$/,
+            test: /\.(png|jpe?g|gif|bmp|webp)(\?.*)?$/,
             loader: require.resolve('url-loader'),
             options: {
               limit: 10000,
-              name: 'static/images/[name].[hash:8].[ext]'
-            }
+              name: 'static/images/[name].[hash:8].[ext]',
+            },
+          },
+          {
+            test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
+            loader: require.resolve('url-loader'),
+            options: {
+              limit: 10000,
+              name: 'static/media/[name].[hash:8].[ext]',
+            },
+          },
+          {
+            test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
+            loader: require.resolve('url-loader'),
+            options: {
+              limit: 10000,
+              name: 'static/fonts/[name].[hash:8].[ext]',
+            },
           },
           {
             test: /\.svg$/,
