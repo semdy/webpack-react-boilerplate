@@ -5,6 +5,7 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
@@ -189,7 +190,7 @@ module.exports = {
             loader: extractCSSFromLoader()
           },
           {
-            test: /\.scss$/,
+            test: /\.(sass|scss)$/,
             loader: extractCSSFromLoader('sass-loader')
           },
           {
@@ -230,6 +231,7 @@ module.exports = {
       },
     }),
     new webpack.HashedModuleIdsPlugin(),
+    new webpack.optimize.ModuleConcatenationPlugin(),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
       minChunks: function (module) {
@@ -240,14 +242,15 @@ module.exports = {
       }
     }),
     new webpack.optimize.CommonsChunkPlugin({
-      async: 'common-chunk',
+      name: 'manifest',
+      minChunks: Infinity
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      async: 'async-chunk',
+      children: true,
       minChunks: (module, count) => (
         count >= 2
       )
-    }),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'manifest',
-      minChunks: Infinity
     }),
     new webpack.DefinePlugin(env.stringified),
     new webpack.optimize.UglifyJsPlugin({
@@ -266,6 +269,12 @@ module.exports = {
     }),
     new ExtractTextPlugin({
       filename: cssFilename,
+      allChunks: true
+    }),
+    new OptimizeCSSPlugin({
+      cssProcessorOptions: shouldUseSourceMap
+        ? { safe: true, map: { inline: false } }
+        : { safe: true }
     }),
     new ManifestPlugin({
       fileName: 'asset-manifest.json',
