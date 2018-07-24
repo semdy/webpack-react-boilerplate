@@ -264,7 +264,7 @@ module.exports = {
       minChunks: Infinity
     }),
     new webpack.optimize.CommonsChunkPlugin({
-      async: 'async-chunk',
+      async: 'async',
       children: true,
       minChunks: (module, count) => (
         count >= 2
