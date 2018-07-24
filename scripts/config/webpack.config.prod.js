@@ -290,9 +290,19 @@ module.exports = {
       allChunks: true
     }),
     new OptimizeCSSPlugin({
-      cssProcessorOptions: shouldUseSourceMap
-        ? { safe: true, map: { inline: false } }
-        : { safe: true }
+      cssProcessorOptions: Object.assign(
+        {
+          safe: true,
+          map: { inline: false },
+          discardComments: { removeAll: true }
+        },
+        shouldUseSourceMap ?
+          {
+            map: { inline: false }
+          }
+          :
+          {}
+        )
     }),
     new ManifestPlugin({
       fileName: 'asset-manifest.json',
