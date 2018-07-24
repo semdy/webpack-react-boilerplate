@@ -80,7 +80,6 @@ const extractCSSFromLoader = (loaderName) => {
   )
 };
 
-
 module.exports = {
   target: 'node',
   externals: nodeExternals(),
