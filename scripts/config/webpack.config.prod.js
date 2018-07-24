@@ -11,8 +11,8 @@ const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const eslintFormatter = require('react-dev-utils/eslintFormatter');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
-const PrerenderSPAPlugin = require('prerender-spa-plugin');
-const Renderer = PrerenderSPAPlugin.PuppeteerRenderer;
+/*const PrerenderSPAPlugin = require('prerender-spa-plugin');
+const Renderer = PrerenderSPAPlugin.PuppeteerRenderer;*/
 const pxtorem = require('postcss-pxtorem');
 const paths = require('./paths');
 const getClientEnvironment = require('./env');
@@ -316,7 +316,7 @@ module.exports = {
     }),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     // == PRERENDER SPA PLUGIN == //
-    new PrerenderSPAPlugin({
+    /*new PrerenderSPAPlugin({
       // Index.html is in the root directory.
       staticDir: paths.appBuild,
       routes: [ '/' ],
@@ -332,7 +332,7 @@ module.exports = {
       renderer: new Renderer({
         renderAfterTime: 500
       })
-    })
+    })*/
   ],
   node: {
     dgram: 'empty',
