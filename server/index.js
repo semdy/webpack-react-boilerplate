@@ -2,12 +2,14 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
+const isNoHtml = process.env.RENDER_MODE === 'nohtml';
 
 let serverRenderer;
 
 if (process.env.NODE_ENV === 'production') {
-  let serverRendererPath = path.join(__dirname, '../dist/static/scripts/renderer.js');
-  serverRenderer = require(serverRendererPath).default;
+  let serverRendererPath = path.join(__dirname, '..', 'dist/static/scripts/renderer.js');
+  let renderer = require(serverRendererPath).default;
+  serverRenderer = (req, res, next) => renderer(req, res, next, isNoHtml);
 } else {
   serverRenderer = require('./renderer.js').default;
 }

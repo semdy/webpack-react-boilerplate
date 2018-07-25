@@ -11,9 +11,9 @@ const fs = require("fs");
 const isDev = process.env.NODE_ENV === 'development';
 const targetFolder = isDev ? 'public' : 'dist';
 
-export default (req, res, next) => {
+export default (req, res, next, isNoHtml) => {
   const filePath = path.resolve(__dirname, '..', targetFolder, 'index.html');
-  fs.readFile(filePath, 'utf8', (err, htmlData) => {
+  fs.readFile(filePath, 'utf8', (err, html) => {
     if (err) {
       console.error('err', err);
       return res.status(404).end();
@@ -25,7 +25,7 @@ export default (req, res, next) => {
     store.dispatch(push(req.originalUrl));
 
     const preloadedState = serialize(store.getState());
-    const markup = ReactDOMServer.renderToString(
+    const markup = isNoHtml ? '' : ReactDOMServer.renderToString(
       <Provider store={store}>
         <ConnectedRouter history={history}>
           <App/>
@@ -33,18 +33,18 @@ export default (req, res, next) => {
       </Provider>
     );
 
-    htmlData = htmlData.replace(
+    html = html.replace(
       '<div id="root"></div>',
       `<div id="root">${markup}</div>`
     ).replace('window.INITIAL_STATE={}', `window.INITIAL_STATE = ${preloadedState}`);
 
     if (isDev) {
-      htmlData = htmlData
+      html = html
         .replace(/%PUBLIC_URL%/g, process.env.PUBLIC_URL)
         .replace('</body>', '<script type="text/javascript" src="/bundle.js"></script>\n</body>');
     }
 
-    return res.status(200).send(htmlData);
+    return res.status(200).send(html);
 
   });
 }

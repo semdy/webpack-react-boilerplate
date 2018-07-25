@@ -8,6 +8,7 @@
     "build:client": "node scripts/build.js",
     "build:server": "node scripts/server.js",
     "server": "npm run serve:kill && cross-env NODE_ENV=production PORT=8000 pm2 start server/index.js",
+    "server:nohtml": "npm run serve:kill && cross-env NODE_ENV=production RENDER_MODE=nohtml PORT=8082 pm2 start server/index.js",
     "dev:server": "cross-env NODE_ENV=development nodemon --exec babel-node server/index.js",
     "serve:dist": "pushstate-server dist",
     "serve:kill": "pm2 kill",
