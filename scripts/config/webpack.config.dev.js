@@ -56,7 +56,7 @@ module.exports = {
   entry: [
     require.resolve('./polyfills'),
     require.resolve('react-dev-utils/webpackHotDevClient'),
-    paths.appIndexJs
+    paths.appClient
   ],
   output: {
     pathinfo: true,

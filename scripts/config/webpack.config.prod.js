@@ -92,7 +92,7 @@ module.exports = {
   entry: {
     app: [
       require.resolve('./polyfills'),
-      paths.appIndexJs
+      paths.appClient
     ]
   },
   output: {

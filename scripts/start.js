@@ -4,7 +4,7 @@
 process.env.BABEL_ENV = 'development';
 process.env.NODE_ENV = 'development';
 process.env.HOST = require('ip').address();
-console.log(process.argv)
+
 // Makes the script crash on unhandled rejections instead of silently
 // ignoring them. In the future, promise rejections that are not handled will
 // terminate the Node.js process with a non-zero exit code.
@@ -36,7 +36,7 @@ const useYarn = fs.existsSync(paths.yarnLockFile);
 const isInteractive = process.stdout.isTTY;
 
 // Warn and crash if required files are missing
-if (!checkRequiredFiles([paths.appHtml, paths.appIndexJs])) {
+if (!checkRequiredFiles([paths.appHtml, paths.appClient])) {
   process.exit(1);
 }
 

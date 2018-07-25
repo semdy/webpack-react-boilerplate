@@ -6,10 +6,10 @@ const logger = require('morgan');
 let serverRenderer;
 
 if (process.env.NODE_ENV === 'production') {
-  let serverRendererPath = path.join(__dirname, '../dist/static/scripts/renderer.js');
+  let serverRendererPath = path.join(__dirname, '..', 'dist/static/scripts/renderer.js');
   serverRenderer = require(serverRendererPath).default;
 } else {
-  serverRenderer = require('./renderer.js').default;
+  serverRenderer = require('../src/entry-server').default;
 }
 
 const PORT = process.env.PORT || 8000;

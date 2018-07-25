@@ -14,7 +14,7 @@ if (process.env.NODE_ENV === 'production') {
   let renderer = require(serverRendererPath).default;
   serverRenderer = (req, res, next) => renderer(req, res, next, isNoHtml);
 } else {
-  serverRenderer = require('./renderer.js').default;
+  serverRenderer = require('../src/entry-server').default;
 }
 
 const PORT = process.env.PORT || 8000;
@@ -33,7 +33,7 @@ if (process.env.NODE_ENV === 'development') {
   const webpack = require('webpack');
   const webpackMiddleware = require('webpack-dev-middleware');
   const hotMiddleware = require('webpack-hot-middleware');
-  const config = require('../scripts/config/webpack.config.dev.js');
+  const config = require('./config/webpack.config.dev.js');
   const compiler = webpack(config);
 
   app.use(hotMiddleware(compiler, {

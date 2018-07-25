@@ -3,8 +3,8 @@ import ReactDOMServer from 'react-dom/server';
 import {ConnectedRouter, push} from 'react-router-redux';
 import {Provider} from 'react-redux';
 import serialize from 'serialize-javascript';
-import App from '../src/App';
-import configureStore from '../src/store/configureStore';
+import App from './App';
+import configureStore from './store/configureStore';
 
 const path = require("path");
 const fs = require("fs");

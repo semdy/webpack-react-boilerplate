@@ -23,7 +23,6 @@ if (env.stringified['process.env'].NODE_ENV !== '"server"') {
 }
 
 const cssFilename = 'static/styles/[name].[contenthash:8].css';
-const rendererFile = path.resolve(paths.appServer, 'renderer.js');
 const extractTextPluginOptions = shouldUseRelativeAssetPaths
   ? {publicPath: Array(cssFilename.split('/').length).join('../')}
   : {};
@@ -86,7 +85,7 @@ module.exports = {
   bail: true,
   devtool: shouldUseSourceMap ? 'source-map' : false,
   entry: {
-    renderer: rendererFile
+    renderer: paths.appServer
   },
   output: {
     path: paths.appBuild,
