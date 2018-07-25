@@ -2,6 +2,9 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
+const compression = require('compression')
+const microcache = require('route-cache')
+const useMicroCache = process.env.MICRO_CACHE !== 'false'
 const isNoHtml = process.env.RENDER_MODE === 'nohtml';
 
 let serverRenderer;
@@ -17,9 +20,13 @@ if (process.env.NODE_ENV === 'production') {
 const PORT = process.env.PORT || 8000;
 const app = express();
 
+app.use(compression({ threshold: 0 }))
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+// 1-second microcache.
+// https://www.nginx.com/blog/benefits-of-microcaching-nginx/
+app.use(microcache.cacheSeconds(1, req => useMicroCache && req.originalUrl))
 
 if (process.env.NODE_ENV === 'development') {
   const chokidar = require('chokidar');
