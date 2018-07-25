@@ -81,7 +81,6 @@ const extractCSSFromLoader = (loaderName) => {
 
 module.exports = {
   target: 'node',
-  externals: nodeExternals(),
   bail: true,
   devtool: shouldUseSourceMap ? 'source-map' : false,
   entry: {
@@ -110,6 +109,10 @@ module.exports = {
       new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson]),
     ],
   },
+  externals: nodeExternals({
+    // do not externalize CSS files in case we need to import it from a dep
+    whitelist: /\.css$/
+  }),
   module: {
     strictExportPresence: true,
     rules: [
