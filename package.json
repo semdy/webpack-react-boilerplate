@@ -10,6 +10,7 @@
     "server": "npm run serve:kill && cross-env NODE_ENV=production PORT=8000 pm2 start scripts/dev-server.js",
     "server:nohtml": "npm run serve:kill && cross-env NODE_ENV=production RENDER_MODE=nohtml PORT=8082 pm2 start scripts/dev-server.js",
     "dev:server": "cross-env NODE_ENV=development nodemon --exec babel-node scripts/dev-server.js",
+    "dll": "webpack --config scripts/config/webpack.config.dll.js",
     "serve:dist": "pushstate-server dist",
     "serve:kill": "pm2 kill",
     "clean": "rimraf dist",
