@@ -5,8 +5,13 @@ import ReactDOM from 'react-dom'
 import {ConnectedRouter} from 'react-router-redux'
 import {Provider} from 'react-redux'
 import configureStore from './store/configureStore'
-import App from './App'
+import App from './app'
 import registerServiceWorker from './registerServiceWorker'
+
+let DevTools = null;
+if (process.env.NODE_ENV === 'development') {
+  DevTools = require('./DevTools').default;
+}
 
 const initialState = window.INITIAL_STATE || {}
 delete window.INITIAL_STATE
@@ -22,7 +27,10 @@ const {store, history} = configureStore(initialState)
 ReactDOM.render(
   <Provider store={store}>
     <ConnectedRouter history={history}>
-      <App/>
+      <div>
+        <App/>
+        <DevTools />
+      </div>
     </ConnectedRouter>
   </Provider>,
   document.getElementById('root')
