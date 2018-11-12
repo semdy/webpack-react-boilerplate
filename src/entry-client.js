@@ -9,7 +9,8 @@ import App from './app'
 import registerServiceWorker from './registerServiceWorker'
 
 let DevTools = null;
-if (process.env.NODE_ENV === 'development') {
+let isDev = process.env.NODE_ENV === 'development'
+if (isDev) {
   DevTools = require('./DevTools').default;
 }
 
@@ -41,8 +42,6 @@ if (window.location.protocol === 'https:') {
   registerServiceWorker()
 }
 
-if (process.env.NODE_ENV === 'development') {
-  if (module.hot) {
-    module.hot.accept()
-  }
+if (isDev && module.hot) {
+  module.hot.accept()
 }
