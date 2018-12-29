@@ -163,12 +163,8 @@ module.exports = {
           },
           {
             test: /\.svg$/,
-            include: paths.appIcons,
-            use: [
-              {
-                loader: 'svg-sprite-loader'
-              }
-            ]
+            loader: 'svg-sprite-loader',
+            include: paths.appIcons
           },
           {
             test: /\.json$/,
@@ -177,14 +173,25 @@ module.exports = {
           },
           {
             test: /\.(js|jsx|mjs)$/,
+            loader: require.resolve('babel-loader'),
             include: [
               paths.appSrc,
               paths.appServer,
             ],
-            loader: require.resolve('babel-loader'),
             options: {
               compact: true,
             },
+          },
+          {
+            test: /\.tsx?$/,
+            loader: require.resolve('ts-loader'),
+            include: [
+              paths.appSrc,
+              paths.appServer,
+            ],
+            query: {
+              transpileOnly: true
+            }
           },
           {
             test: /\.css$/,

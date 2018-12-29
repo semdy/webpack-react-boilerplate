@@ -150,12 +150,8 @@ module.exports = {
           },
           {
             test: /\.svg$/,
-            include: paths.appIcons,
-            use: [
-              {
-                loader: 'svg-sprite-loader'
-              }
-            ]
+            loader: 'svg-sprite-loader',
+            include: paths.appIcons
           },
           {
             test: /\.json$/,
@@ -165,14 +161,22 @@ module.exports = {
           // Process JS with Babel.
           {
             test: /\.(js|jsx|mjs)$/,
-            include: paths.appSrc,
             loader: require.resolve('babel-loader'),
+            include: paths.appSrc,
             options: {
 
               // This is a feature of `babel-loader` for webpack (not Babel itself).
               // It enables caching results in ./node_modules/.cache/babel-loader/
               // directory for faster rebuilds.
               cacheDirectory: true,
+            }
+          },
+          {
+            test: /\.tsx?$/,
+            loader: require.resolve('ts-loader'),
+            include: paths.appSrc,
+            query: {
+              transpileOnly: true
             }
           },
           // "postcss" loader applies autoprefixer to our CSS.
