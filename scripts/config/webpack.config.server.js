@@ -145,7 +145,7 @@ module.exports = {
           {
             test: /\.svg$/,
             // include: paths.appImages,
-            exclude: paths.appIcons,
+            // exclude: paths.appIcons,
             use: [
               "babel-loader",
               {
