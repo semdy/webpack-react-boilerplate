@@ -117,6 +117,7 @@ module.exports = {
       new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson]),
     ]
   },
+  cache: true,
   module: {
     strictExportPresence: true,
     rules: [
@@ -163,7 +164,7 @@ module.exports = {
           },
           {
             test: /\.svg$/,
-            include: paths.appImages,
+            // include: paths.appImages,
             exclude: paths.appIcons,
             use: [
               "babel-loader",

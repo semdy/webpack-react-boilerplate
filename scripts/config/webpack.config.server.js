@@ -109,6 +109,7 @@ module.exports = {
       new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson]),
     ],
   },
+  cache: true,
   externals: nodeExternals({
     // do not externalize CSS files in case we need to import it from a dep
     whitelist: /\.css$/
@@ -143,7 +144,7 @@ module.exports = {
           },
           {
             test: /\.svg$/,
-            include: paths.appImages,
+            // include: paths.appImages,
             exclude: paths.appIcons,
             use: [
               "babel-loader",
