@@ -8,7 +8,7 @@ import configureStore from './store/configureStore'
 import App from './app'
 import registerServiceWorker from './registerServiceWorker'
 
-let DevTools = null;
+let DevTools = React.Fragment;
 let isDev = process.env.NODE_ENV === 'development'
 if (isDev) {
   DevTools = require('./DevTools').default;

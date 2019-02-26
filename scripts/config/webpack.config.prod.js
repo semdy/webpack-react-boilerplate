@@ -109,7 +109,7 @@ module.exports = {
     modules: ['node_modules', paths.appNodeModules].concat(
       process.env.NODE_PATH.split(path.delimiter).filter(Boolean)
     ),
-    extensions: ['.web.js', '.mjs', '.js', '.json', '.web.jsx', '.jsx'],
+    extensions: ['.web.js', '.mjs', '.js', '.ts', '.json', '.web.jsx', '.jsx', '.tsx'],
     alias: {
       'react-native': 'react-native-web',
     },
@@ -126,12 +126,12 @@ module.exports = {
         enforce: 'pre',
         use: [
           {
+            loader: require.resolve('eslint-loader'),
             options: {
               formatter: eslintFormatter,
               eslintPath: require.resolve('eslint'),
 
             },
-            loader: require.resolve('eslint-loader'),
           },
         ],
         include: paths.appSrc
@@ -204,7 +204,7 @@ module.exports = {
             test: /\.tsx?$/,
             loader: require.resolve('ts-loader'),
             include: paths.appSrc,
-            query: {
+            options: {
               transpileOnly: true
             }
           },
